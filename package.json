@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "necromancy + mania = necromaai",
   "main": "index.js",
+  "engines": {
+    "node": ">=19.x",
+    "npm": ">=9.x"
+  },
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -91,9 +91,8 @@ function generatePredictions(model, inputArray) {
 
   const predictions = [];
   for (let i = 0; i < outputArray.length; i += 6) {
-    predictions.push(outputArray.slice(i, i + 6));
+    predictions.push(outputArray.slice(i, i + 6).map(num =>  Math.round(num)));
   }
-
   return predictions;
 }
 

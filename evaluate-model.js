@@ -1,6 +1,12 @@
-const { inputData } = require("./data");
+const tf = require("@tensorflow/tfjs");
+const { Sequential } = tf;
+const { inputData, outputData } = require("./data");
 const { preprocessData, buildModel, trainModel } = require("./model");
-
+/**
+ * 
+ * @param {Sequential} model 
+ * @param {Array<Array>} testData 
+ */
 function evaluateModel(model, testData) {
   const inputTensor = tf.tensor2d(testData.input, [testData.input.length, 6]);
   const targetTensor = tf.tensor2d(testData.target, [
@@ -28,19 +34,13 @@ const processedData = preprocessData(inputData);
 //
 const model = buildModel();
 
-await trainModel(model, processedData);
-// Example usage:
-const testData = {
-  input: [
-    [1, 11, 25, 26, 37, 20],
-    [3, 15, 22, 28, 41, 12],
-    // Add more test input arrays
-  ],
-  target: [
-    [5, 20, 30, 34, 41, 18],
-    [2, 12, 19, 25, 36, 8],
-    // Add corresponding target arrays for evaluation
-  ],
-};
-
-evaluateModel(model, testData);
+trainModel(model, processedData).then(() => {
+  console.log("Done!");
+  const testData = {
+    input: inputData,
+    target: outputData,
+  };
+  
+  evaluateModel(model, testData);
+  
+})

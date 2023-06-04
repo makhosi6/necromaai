@@ -1,17 +1,18 @@
-const tf = require("@tensorflow/tfjs");
+const fs = require("node:fs");
 const {
   buildModel,
   preprocessData,
   trainModel,
   generatePredictions,
 } = require("./model");
-const { inputData } = require("./data");
+const { bulkData } = require("./data"),
+  inputData = bulkData;
 
 /** @description processed data */
 const processedData = preprocessData(inputData);
 
 /**
- * 
+ *
  */
 async function runModel() {
   //
@@ -19,18 +20,36 @@ async function runModel() {
 
   await trainModel(model, processedData);
 
-  let inputArray = [1, 11, 25, 26, 37, 20];
-  const numCycles = 3; // Specify the number of prediction cycles
+  const numCycles = 30; // Specify the number of prediction cycles
 
   for (let cycle = 1; cycle <= numCycles; cycle++) {
-    const predictions = generatePredictions(model, inputArray);
-    console.log(`Cycle ${cycle} Predictions:`, predictions);
+    let num = Math.floor(Math.random() * inputData.length);
+    let inputArray = inputData[num];
+    console.log(inputArray, "  ", num);
 
+    const predictions = generatePredictions(model, inputArray);
+    console.log(predictions);
+    writeToTxt(predictions);
     // Use the last prediction as the input for the next cycle
-    inputArray = predictions[predictions.length - 1];
+    // inputArray = predictions[0];
   }
 }
 
 runModel().catch((error) => {
   console.error("Error running the model:", error);
 });
+
+const writeToTxt = (data) =>
+  fs.writeFile(
+    `/Users/makhosi/Desktop/projects/necromaai/data/ithuba.txt`,
+    "\n" + `[${data}],`,
+    {
+      flag: "a+",
+    },
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      // console.log(`Add ${data} to *txt file`);
+    }
+  );
